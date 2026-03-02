@@ -1,0 +1,11 @@
+{
+  "name": "sentinel-workspace",
+  "private": true,
+  "version": "0.1.0",
+  "scripts": {
+    "dev:render": "set DISABLE_HMR=true && npm run dev --prefix render",
+    "dev:electron": "npm run dev --prefix electron",
+    "build:render": "npm run build --prefix render",
+    "lint:render": "npm run lint --prefix render"
+  }
+}

@@ -1,0 +1,5 @@
+{
+  "name": "Sentinel AI Vision",
+  "description": "A high-tech security monitoring dashboard with real-time AI detection visualization.",
+  "requestFramePermissions": ["camera"]
+}

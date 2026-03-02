@@ -1,0 +1,8 @@
+@import "tailwindcss";
+
+@theme {
+  --color-primary: #13ec5b;
+  --color-background-dark: #0d140f;
+  --color-slate-panel: #16251b;
+  --color-slate-border: #243a2b;
+}
