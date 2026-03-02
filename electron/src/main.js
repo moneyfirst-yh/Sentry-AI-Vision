@@ -68,6 +68,7 @@ const defaultSettings = {
   actionStates: [
     { id: 'desktop-notification', enabled: true },
     { id: 'auto-kill', enabled: false },
+    { id: 'auto-minimize', enabled: false },
     { id: 'back-to-desktop', enabled: true },
   ],
 };
@@ -83,10 +84,10 @@ let mainWindow = null;
 
 const createWindow = () => {
   mainWindow = new BrowserWindow({
-    width: 1360,
-    height: 860,
-    minWidth: 1200,
-    minHeight: 760,
+    width: 375,
+    height: 812,
+    minWidth: 360,
+    minHeight: 640,
     autoHideMenuBar: true,
     webPreferences: {
       preload: path.join(__dirname, 'preload.js'),
@@ -98,7 +99,7 @@ const createWindow = () => {
 
   const rendererUrl = process.env.ELECTRON_RENDERER_URL;
   if (rendererUrl) {
-    mainWindow.webContents.session.clearCache().catch(() => {});
+    mainWindow.webContents.session.clearCache().catch(() => { });
     mainWindow.loadURL(rendererUrl);
     mainWindow.webContents.openDevTools({ mode: 'detach' });
   } else {
@@ -119,19 +120,14 @@ const registerIpc = () => {
   });
 
   ipcMain.handle('system:list-processes', async () => {
-    const blockedProcessNames = new Set([
-      'System Idle Process',
-      'System',
-      'Registry',
-      'Memory Compression',
-    ]);
     const raw = await runTaskList();
     const processes = parseTaskList(raw)
       .filter((item) => item.pid > 0)
-      .filter((item) => !blockedProcessNames.has(item.name))
-      .filter((item) => !item.name.toLowerCase().startsWith('svchost'))
       .sort((a, b) => {
-        const nameDiff = a.name.localeCompare(b.name);
+        // Sort by App Name (from MainWindowTitle which we mapped to description)
+        const nameA = a.description || a.name || '';
+        const nameB = b.description || b.name || '';
+        const nameDiff = nameA.localeCompare(nameB);
         if (nameDiff !== 0) {
           return nameDiff;
         }
@@ -145,6 +141,13 @@ const registerIpc = () => {
   ipcMain.handle('system:kill-process', async (_event, pid) => {
     const parsedPid = z.number().int().positive().parse(pid);
     await killProcessByPid(parsedPid);
+    return { ok: true };
+  });
+
+  ipcMain.handle('system:minimize-process', async (_event, pid) => {
+    const parsedPid = z.number().int().positive().parse(pid);
+    const { minimizeProcessByPid } = require('./services/system-actions');
+    await minimizeProcessByPid(parsedPid);
     return { ok: true };
   });
 

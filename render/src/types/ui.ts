@@ -96,6 +96,7 @@ export interface NativeProcessInfo {
   id: string;
   pid: number;
   name: string;
+  description?: string;
 }
 
 export interface TelemetrySample {

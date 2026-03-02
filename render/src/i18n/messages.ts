@@ -72,6 +72,8 @@ export const messages: Record<Language, MessageMap> = {
     'action.auto-kill.desc': '达到阈值后终止所选进程',
     'action.back-to-desktop.title': '自动返回桌面',
     'action.back-to-desktop.desc': '风险升高时切换到桌面',
+    'action.auto-minimize.title': '自动最小化进程',
+    'action.auto-minimize.desc': '达到阈值后将所选进程最小化',
     'watch.title': '监控目标',
     'watch.subtitle': '风险升高时保护的进程',
     'watch.refresh': '刷新',
@@ -179,6 +181,7 @@ export const messages: Record<Language, MessageMap> = {
     'action.result.desktop-notification': '桌面通知',
     'action.result.back-to-desktop': '返回桌面',
     'action.result.auto-kill': '终止进程 {name}',
+    'action.result.auto-minimize': '最小化进程 {name}',
   },
   en: {
     'app.title': 'Sentry AI Vision',
@@ -249,6 +252,8 @@ export const messages: Record<Language, MessageMap> = {
     'action.auto-kill.desc': 'Terminate selected process at threshold',
     'action.back-to-desktop.title': 'Auto-return to Desktop',
     'action.back-to-desktop.desc': 'Switch to desktop when risk level is high',
+    'action.auto-minimize.title': 'Auto-minimize Process',
+    'action.auto-minimize.desc': 'Minimize selected process without killing it',
     'watch.title': 'Watch Target',
     'watch.subtitle': 'Process to protect when risk rises',
     'watch.refresh': 'Refresh',
@@ -356,5 +361,6 @@ export const messages: Record<Language, MessageMap> = {
     'action.result.desktop-notification': 'Desktop notification',
     'action.result.back-to-desktop': 'Back to desktop',
     'action.result.auto-kill': 'Terminate {name}',
+    'action.result.auto-minimize': 'Minimize {name}',
   },
 };

@@ -13,45 +13,67 @@ const normalizeProcessPresentation = (
   process: NativeProcessInfo,
 ): ProcessOption => {
   const name = process.name.toLowerCase();
+  const desc = process.description ?? '';
+
+  // Browsers
   if (name.includes('chrome') || name.includes('edge') || name.includes('firefox')) {
     return {
       id: process.id,
       pid: process.pid,
-      name: process.name,
-      description: 'Browser',
+      name: desc || process.name,
+      description: '浏览器 (Browser)',
       iconName: 'globe',
       iconColorClass: 'text-blue-500',
     };
   }
+
+  // Dev Tools
   if (
     name.includes('code') ||
     name.includes('idea') ||
-    name.includes('devenv')
+    name.includes('devenv') ||
+    name.includes('wechatwebdevtools')
   ) {
     return {
       id: process.id,
       pid: process.pid,
-      name: process.name,
-      description: 'Development tool',
+      name: desc || process.name,
+      description: '开发工具 (Dev Tool)',
       iconName: 'terminal',
       iconColorClass: 'text-primary',
     };
   }
-  if (name.includes('notion') || name.includes('obsidian')) {
+
+  // Communication
+  if (name.includes('wechat') || name.includes('qq') || name.includes('feishu') || name.includes('dingtalk')) {
     return {
       id: process.id,
       pid: process.pid,
-      name: process.name,
-      description: 'Workspace',
+      name: desc || process.name,
+      description: '通讯软件 (Communication)',
+      iconName: 'users',
+      iconColorClass: 'text-green-500',
+    };
+  }
+
+  // Workspaces
+  if (name.includes('notion') || name.includes('obsidian') || name.includes('winword') || name.includes('excel')) {
+    return {
+      id: process.id,
+      pid: process.pid,
+      name: desc || process.name,
+      description: '办公应用 (Workspace)',
       iconName: 'file',
       iconColorClass: 'text-orange-500',
     };
   }
+
+  // Fallback
   return {
     id: process.id,
     pid: process.pid,
-    name: process.name,
-    description: 'Running process',
+    name: desc || process.name,
+    description: '运行中程序 (Running App)',
     iconName: 'monitorCog',
     iconColorClass: 'text-slate-300',
   };

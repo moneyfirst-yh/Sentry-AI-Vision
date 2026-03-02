@@ -90,6 +90,13 @@ export const actionSettings: ActionSetting[] = [
     enabled: true,
     iconName: 'monitor',
   },
+  {
+    id: 'auto-minimize',
+    title: 'Auto-minimize Process',
+    subtitle: 'Minimize selected process without killing',
+    enabled: false,
+    iconName: 'monitorCog',
+  },
 ];
 
 export const processOptions: ProcessOption[] = [

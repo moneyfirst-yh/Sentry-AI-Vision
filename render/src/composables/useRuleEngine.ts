@@ -73,6 +73,16 @@ export function useRuleEngine(
       }
     }
 
+    if (actionMap.get('auto-minimize')) {
+      const process = input.selectedProcess.value;
+      if (process) {
+        const result = await nativeApi.system.minimizeProcess(process.pid);
+        if (result.ok) {
+          results.push(`auto-minimize:${process.name}(${process.pid})`);
+        }
+      }
+    }
+
     if (actionMap.get('back-to-desktop')) {
       const result = await nativeApi.system.showDesktop();
       if (result.ok) {

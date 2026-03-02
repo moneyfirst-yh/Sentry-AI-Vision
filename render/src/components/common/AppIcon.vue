@@ -51,5 +51,5 @@ const props = defineProps<{
   <Terminal v-else-if="props.name === 'terminal'" :class="props.class" />
   <UserCheck v-else-if="props.name === 'userCheck'" :class="props.class" />
   <Users v-else-if="props.name === 'users'" :class="props.class" />
-  <Shield :class="props.class" />
+  <Shield v-else :class="props.class" />
 </template>

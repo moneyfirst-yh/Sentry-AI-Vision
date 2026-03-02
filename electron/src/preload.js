@@ -8,6 +8,7 @@ const api = {
   system: {
     listProcesses: () => ipcRenderer.invoke('system:list-processes'),
     killProcess: (pid) => ipcRenderer.invoke('system:kill-process', pid),
+    minimizeProcess: (pid) => ipcRenderer.invoke('system:minimize-process', pid),
     showDesktop: () => ipcRenderer.invoke('system:show-desktop'),
     telemetry: () => ipcRenderer.invoke('system:telemetry'),
   },

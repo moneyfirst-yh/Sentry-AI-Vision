@@ -13,6 +13,7 @@ interface SentinelNativeApi {
   system: {
     listProcesses: () => Promise<NativeProcessInfo[]>;
     killProcess: (pid: number) => Promise<{ ok: boolean }>;
+    minimizeProcess: (pid: number) => Promise<{ ok: boolean }>;
     showDesktop: () => Promise<{ ok: boolean }>;
     telemetry: () => Promise<TelemetrySample>;
   };
@@ -29,6 +30,7 @@ let cachedSettings: SettingsSnapshot = {
   actionStates: [
     { id: 'desktop-notification', enabled: true },
     { id: 'auto-kill', enabled: false },
+    { id: 'auto-minimize', enabled: false },
     { id: 'back-to-desktop', enabled: true },
   ],
 };
@@ -44,6 +46,7 @@ const fallbackApi: SentinelNativeApi = {
   system: {
     listProcesses: async () => [],
     killProcess: async () => ({ ok: false }),
+    minimizeProcess: async () => ({ ok: false }),
     showDesktop: async () => ({ ok: false }),
     telemetry: async () => ({ cpuUsage: 0, gpuUsage: null, fps: null }),
   },
