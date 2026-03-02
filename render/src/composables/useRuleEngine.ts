@@ -51,7 +51,7 @@ export function useRuleEngine(
 
     if (actionMap.get('desktop-notification')) {
       const result = await nativeApi.notify.send({
-        title: t?.('notify.title', '哨兵告警') ?? '哨兵告警',
+        title: t?.('notify.title', '消息') ?? '消息',
         body: input.notificationText.value,
       });
       if (result.ok) {
