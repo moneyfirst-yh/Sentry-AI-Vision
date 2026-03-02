@@ -6,6 +6,8 @@
     "dev:render": "set DISABLE_HMR=true && npm run dev --prefix render",
     "dev:electron": "npm run dev --prefix electron",
     "build:render": "npm run build --prefix render",
+    "build:electron": "npm run build --prefix electron",
+    "build": "npm run build:render && npm run build:electron",
     "lint:render": "npm run lint --prefix render"
   }
 }

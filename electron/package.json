@@ -6,13 +6,37 @@
   "type": "commonjs",
   "scripts": {
     "dev": "set ELECTRON_RENDERER_URL=http://localhost:3000 && electron .",
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-builder --win"
+  },
+  "build": {
+    "appId": "com.sentinel.desktop",
+    "productName": "Sentinel",
+    "directories": {
+      "output": "release"
+    },
+    "files": [
+      "src/**/*",
+      "renderDist/**/*",
+      "package.json"
+    ],
+    "win": {
+      "target": [
+        "nsis",
+        "portable"
+      ]
+    },
+    "nsis": {
+      "oneClick": false,
+      "allowToChangeInstallationDirectory": true
+    }
   },
   "dependencies": {
     "electron-store": "^10.1.0",
     "zod": "^3.25.76"
   },
   "devDependencies": {
-    "electron": "^36.3.2"
+    "electron": "^36.3.2",
+    "electron-builder": "^26.8.1"
   }
 }

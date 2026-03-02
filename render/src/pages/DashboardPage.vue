@@ -1,5 +1,6 @@
 <script setup lang="ts">
-import { computed } from 'vue';
+import { computed, ref } from 'vue';
+import { X } from 'lucide-vue-next';
 import AlarmLogPanel from '../components/dashboard/AlarmLogPanel.vue';
 import CameraFeedPanel from '../components/dashboard/CameraFeedPanel.vue';
 import CamerasPanel from '../components/dashboard/CamerasPanel.vue';
@@ -59,6 +60,11 @@ const statCards = computed(() => [
     value: props.gpuUsage,
   },
 ]);
+
+const previewUrl = ref<string | null>(null);
+const openPreview = (url: string) => {
+  previewUrl.value = url;
+};
 </script>
 
 <template>
@@ -80,11 +86,11 @@ const statCards = computed(() => [
         </section>
 
         <TimelinePanel :bars="props.timelineBars" :t="props.t" />
-        <AlarmLogPanel :logs="props.alarmLogs" :t="props.t" />
+        <AlarmLogPanel :logs="props.alarmLogs" :t="props.t" @preview-image="openPreview" />
       </div>
 
       <div v-show="props.activeTab === 'events'">
-        <EventsPanel :logs="props.alarmLogs" :t="props.t" />
+        <EventsPanel :logs="props.alarmLogs" :t="props.t" @preview-image="openPreview" />
       </div>
 
       <div v-show="props.activeTab === 'cameras'">
@@ -96,10 +102,20 @@ const statCards = computed(() => [
       </div>
 
       <div v-show="props.activeTab === 'logs'">
-        <LogsPanel :logs="props.alarmLogs" :t="props.t" />
+        <LogsPanel :logs="props.alarmLogs" :t="props.t" @preview-image="openPreview" />
       </div>
     </main>
 
     <BottomNav :active-tab="props.activeTab" :items="navItems" :t="props.t" @change-tab="emit('change-tab', $event)" />
+
+    <!-- Image Preview Modal -->
+    <div v-if="previewUrl" class="fixed inset-0 z-[100] bg-black/90 backdrop-blur-sm flex items-center justify-center p-4 lg:p-12 cursor-pointer transition-opacity duration-300" @click.self="previewUrl = null">
+      <div class="relative max-w-full max-h-full flex items-center justify-center">
+        <button type="button" class="absolute -top-12 right-0 lg:-top-4 lg:-right-12 text-white/70 hover:text-white bg-black/50 hover:bg-black/80 rounded-full p-2 transition-colors" @click="previewUrl = null">
+          <X class="w-6 h-6" />
+        </button>
+        <img :src="previewUrl" class="max-w-full max-h-[85vh] object-contain rounded-xl shadow-2xl border border-white/10" @click.stop />
+      </div>
+    </div>
   </div>
 </template>

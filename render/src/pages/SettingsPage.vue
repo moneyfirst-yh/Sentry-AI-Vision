@@ -10,6 +10,7 @@ import type { ActionSetting, ProcessOption } from '../types/ui';
 
 const props = defineProps<{
   masterEnabled: boolean;
+  saveFrameOnTrigger: boolean;
   sensitivity: number;
   proximity: number;
   notificationText: string;
@@ -23,6 +24,7 @@ const emit = defineEmits<{
   (e: 'close'): void;
   (e: 'apply'): void;
   (e: 'update:master-enabled', value: boolean): void;
+  (e: 'update:save-frame-on-trigger', value: boolean): void;
   (e: 'update:sensitivity', value: number): void;
   (e: 'update:proximity', value: number): void;
   (e: 'update:notification-text', value: string): void;
@@ -65,8 +67,9 @@ const applySettings = () => emit('apply');
     </div>
 
     <div class="flex flex-col gap-6 p-4 pb-12">
-      <GlobalSettingsSection :master-enabled="props.masterEnabled" :sensitivity="props.sensitivity"
+      <GlobalSettingsSection :master-enabled="props.masterEnabled" :save-frame-on-trigger="props.saveFrameOnTrigger" :sensitivity="props.sensitivity"
         :proximity="props.proximity" :t="props.t" @update:master-enabled="emit('update:master-enabled', $event)"
+        @update:save-frame-on-trigger="emit('update:save-frame-on-trigger', $event)"
         @update:sensitivity="emit('update:sensitivity', $event)" @update:proximity="emit('update:proximity', $event)" />
 
       <ActionStrategySection :items="props.actionItems" :notification-text="props.notificationText" :t="props.t"

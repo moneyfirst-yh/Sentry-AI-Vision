@@ -81,6 +81,7 @@ const normalizeProcessPresentation = (
 
 export function useRuleUiState() {
   const masterEnabled = ref(true);
+  const saveFrameOnTrigger = ref(true);
   const sensitivity = ref(75);
   const proximity = ref(45);
   const notificationText = ref('警告：检测到未授权人员靠近！');
@@ -98,6 +99,7 @@ export function useRuleUiState() {
 
   const snapshot = computed<SettingsSnapshot>(() => ({
     masterEnabled: masterEnabled.value,
+    saveFrameOnTrigger: saveFrameOnTrigger.value,
     sensitivity: sensitivity.value,
     proximity: proximity.value,
     selectedProcessId: selectedProcessId.value,
@@ -110,6 +112,10 @@ export function useRuleUiState() {
 
   const setMasterEnabled = (nextValue: boolean) => {
     masterEnabled.value = nextValue;
+  };
+
+  const setSaveFrameOnTrigger = (nextValue: boolean) => {
+    saveFrameOnTrigger.value = nextValue;
   };
 
   const setSensitivity = (nextValue: number) => {
@@ -147,6 +153,9 @@ export function useRuleUiState() {
       return;
     }
     masterEnabled.value = state.masterEnabled;
+    if (state.saveFrameOnTrigger !== undefined) {
+      saveFrameOnTrigger.value = state.saveFrameOnTrigger;
+    }
     sensitivity.value = clampRange(state.sensitivity);
     proximity.value = clampRange(state.proximity);
     selectedProcessId.value = state.selectedProcessId;
@@ -168,12 +177,14 @@ export function useRuleUiState() {
     notificationText,
     processOptions,
     proximity,
+    saveFrameOnTrigger,
     selectedProcess,
     selectedProcessId,
     sensitivity,
     snapshot,
     setActionEnabled,
     setMasterEnabled,
+    setSaveFrameOnTrigger,
     setNotificationText,
     setProcessOptions,
     setProximity,

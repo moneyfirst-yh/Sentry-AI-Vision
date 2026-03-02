@@ -6,3 +6,6 @@ out/
 .runlogs/
 .antigravityignore
 *.log
+
+renderDist
+release

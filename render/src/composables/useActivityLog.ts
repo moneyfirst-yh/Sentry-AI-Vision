@@ -8,6 +8,7 @@ interface EventPayload {
   detail: string;
   level?: AlarmLevel;
   iconName?: IconName;
+  imageUrl?: string;
 }
 
 const resolveLocale = () => {
@@ -52,6 +53,7 @@ export function useActivityLog() {
       }),
       iconName: payload.iconName ?? 'bell',
       level: payload.level ?? 'default',
+      imageUrl: payload.imageUrl,
     };
     logs.value = [item, ...logs.value].slice(0, 80);
   };

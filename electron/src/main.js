@@ -19,6 +19,7 @@ if (process.env.ELECTRON_RENDERER_URL) {
 
 const settingsSchema = z.object({
   masterEnabled: z.boolean(),
+  saveFrameOnTrigger: z.boolean().default(true),
   sensitivity: z.number().min(0).max(100),
   proximity: z.number().min(0).max(100),
   selectedProcessId: z.string().nullable(),
@@ -65,6 +66,7 @@ const sampleCpuUsage = async () => {
 
 const defaultSettings = {
   masterEnabled: true,
+  saveFrameOnTrigger: true,
   sensitivity: 75,
   proximity: 45,
   selectedProcessId: null,
@@ -108,7 +110,7 @@ const createWindow = () => {
     mainWindow.loadURL(rendererUrl);
     mainWindow.webContents.openDevTools({ mode: 'detach' });
   } else {
-    mainWindow.loadFile(path.join(__dirname, '../../render/dist/index.html'));
+    mainWindow.loadFile(path.join(__dirname, '../renderDist/index.html'));
   }
 };
 

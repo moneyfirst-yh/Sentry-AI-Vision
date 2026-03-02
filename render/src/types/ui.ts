@@ -38,6 +38,7 @@ export interface AlarmLogItem {
   detail: string;
   level: AlarmLevel;
   iconName: IconName;
+  imageUrl?: string;
 }
 
 export interface NavItem {
@@ -66,6 +67,7 @@ export interface ProcessOption {
 
 export interface SettingsSnapshot {
   masterEnabled: boolean;
+  saveFrameOnTrigger: boolean;
   sensitivity: number;
   proximity: number;
   selectedProcessId: string | null;

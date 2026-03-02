@@ -10,6 +10,10 @@ const props = defineProps<{
   t: Translator;
 }>();
 
+const emit = defineEmits<{
+  (e: 'preview-image', url: string): void;
+}>();
+
 const query = ref('');
 
 const filteredLogs = computed(() => {
@@ -70,6 +74,9 @@ const filteredLogs = computed(() => {
             <span class="text-[10px] text-slate-500">{{ log.time }}</span>
           </div>
           <p class="text-xs text-slate-400 mt-2">{{ log.detail }}</p>
+          <div v-if="log.imageUrl" class="mt-3 rounded overflow-hidden max-h-32 inline-block border border-slate-700/50 cursor-pointer hover:border-primary/50 transition-colors" @click="emit('preview-image', log.imageUrl)">
+            <img :src="log.imageUrl" class="object-cover h-32 w-auto" :alt="props.t('logs.image.alt', 'Captured frame')" />
+          </div>
         </div>
       </div>
     </div>

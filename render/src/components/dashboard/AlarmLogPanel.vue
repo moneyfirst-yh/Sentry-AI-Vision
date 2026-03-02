@@ -9,6 +9,10 @@ const props = defineProps<{
   t: Translator;
 }>();
 
+const emit = defineEmits<{
+  (e: 'preview-image', url: string): void;
+}>();
+
 const rowClass = (level: AlarmLevel) => {
   if (level === 'alert') {
     return 'border-primary/30 bg-primary/5';
@@ -66,6 +70,9 @@ const timeClass = (level: AlarmLevel) =>
             <span :class="['text-[10px]', timeClass(log.level)]">{{ log.time }}</span>
           </div>
           <p class="text-xs text-slate-400 mt-1">{{ log.detail }}</p>
+          <div v-if="log.imageUrl" class="mt-2 rounded overflow-hidden max-h-24 inline-block border border-slate-700/50 cursor-pointer hover:border-primary/50 transition-colors" @click="emit('preview-image', log.imageUrl)">
+            <img :src="log.imageUrl" class="object-cover h-24 w-auto" :alt="props.t('alarm.image.alt', 'Captured frame')" />
+          </div>
         </div>
       </div>
     </div>

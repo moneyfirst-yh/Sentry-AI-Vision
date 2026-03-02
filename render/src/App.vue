@@ -24,6 +24,7 @@ const {
   masterEnabled,
   processOptions,
   proximity,
+  saveFrameOnTrigger,
   selectedProcess,
   selectedProcessId,
   sensitivity,
@@ -32,6 +33,7 @@ const {
   setMasterEnabled,
   setProcessOptions,
   setProximity,
+  setSaveFrameOnTrigger,
   setSelectedProcessId,
   setSensitivity,
   setNotificationText,
@@ -48,6 +50,17 @@ const {
 
 const camera = useCameraStream();
 const detector = usePersonDetection(camera.videoElement, sensitivity);
+
+const captureVideoFrame = (video: HTMLVideoElement | null): string | undefined => {
+  if (!video || video.readyState < 2) return undefined;
+  const canvas = document.createElement('canvas');
+  canvas.width = video.videoWidth;
+  canvas.height = video.videoHeight;
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return undefined;
+  ctx.drawImage(video, 0, 0, canvas.width, canvas.height);
+  return canvas.toDataURL('image/jpeg', 0.8);
+};
 
 useRuleEngine(
   {
@@ -131,6 +144,7 @@ useRuleEngine(
             ),
         level: 'alert',
         iconName: eventIcons.triggered,
+        imageUrl: saveFrameOnTrigger.value ? captureVideoFrame(camera.videoElement.value) : undefined,
       });
     },
     onError: (message) => {
@@ -395,10 +409,10 @@ onBeforeUnmount(() => {
       :detector-status="detector.status.value" :camera-error="cameraError" :detector-error="detectorError"
       :bind-video-element="camera.bindVideoElement" @open-settings="openSettings" @change-tab="setActiveTab" />
 
-    <SettingsPage v-else key="settings" :t="t" :master-enabled="masterEnabled" :sensitivity="sensitivity"
+    <SettingsPage v-else key="settings" :t="t" :master-enabled="masterEnabled" :save-frame-on-trigger="saveFrameOnTrigger" :sensitivity="sensitivity"
       :proximity="proximity" :notification-text="notificationText" :action-items="actionItems"
       :process-options="processOptions" :selected-process-id="selectedProcessId"
-      @update:master-enabled="setMasterEnabled" @update:sensitivity="setSensitivity" @update:proximity="setProximity"
+      @update:master-enabled="setMasterEnabled" @update:save-frame-on-trigger="setSaveFrameOnTrigger" @update:sensitivity="setSensitivity" @update:proximity="setProximity"
       @update:notification-text="setNotificationText" @update-action="setActionEnabled($event.id, $event.enabled)"
       @update:selected-process-id="setSelectedProcessId" @refresh-processes="refreshProcessList" @apply="applySettings"
       @close="closeSettings" />
