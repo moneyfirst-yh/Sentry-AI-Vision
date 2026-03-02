@@ -1,18 +1,45 @@
-# Sentinel Desktop
+# 哨兵 (Sentinel) Desktop
 
-## Development startup order
+哨兵是一个基于 Electron 和 Vue 3 + TypeScript 的桌面端智能检测与安全告警系统。它能够利用摄像头进行移动和人员靠近检测，并在符合设定的阈值时触发一系列的自动保护操作。
 
-0. Install dependencies once:
-   - `npm install --prefix render`
-   - `npm install --prefix electron`
+## 🌟 核心功能
 
-1. Start renderer dev server:
-   - `npm run dev:render`
-2. In a second terminal, start Electron shell:
-   - `npm run dev:electron`
+- **智能靠近与运动检测**：基于设定的灵敏度和靠近阈值，实时进行人员检测与画面运动打分。
+- **自定义动作策略**：在触发告警时，可配置多种响应行为：
+  - **发送桌面通知**：可自由自定义通知文本（例如“警告：检测到未授权人员靠近！”）。
+  - **自动终止进程**：直接结束指定的敏感应用程序进程。
+  - **自动最小化进程**：自动将指定进程从前台最小化。
+  - **返回桌面**：触发系统快捷键以快速隐藏所有窗口。
+- **完全中文化支持**：精简重构的纯中文交互界面。
+- **后台硬核保活**：无论窗口被最小化还是隐藏，得益于底层的硬核保活机制设定，哨兵依然会在后台全速且持续地运行检测任务，告别休眠停摆。
+- **系统资源监控与日志**：实时掌握当前 CPU 使用情况并记录详尽的历史告警事件。
 
-## Build renderer for packaged Electron
+## 🛠️ 开发与环境配置
 
-- `npm run build:render`
+本项目采用了前后端分离（主进程与渲染进程）的方式进行开发管理。
 
-Electron will load `render/dist/index.html` when `ELECTRON_RENDERER_URL` is not set.
+### 0. 依赖安装 (首次运行必做)
+分别为主进程和渲染进程安装依赖：
+```bash
+npm install --prefix render
+npm install --prefix electron
+```
+
+### 1. 启动开发模式
+
+在第一个终端启动前端 Vue 开发服务器 (Vite)：
+```bash
+npm run dev:render
+```
+
+在第二个终端启动 Electron 应用：
+```bash
+npm run dev:electron
+```
+
+### 2. 构建与生产版
+编译渲染进程为静态资源：
+```bash
+npm run build:render
+```
+*注：当未设置 `ELECTRON_RENDERER_URL` 环境变量时，Electron 会默认加载 `render/dist/index.html`。*
