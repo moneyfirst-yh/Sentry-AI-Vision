@@ -11,6 +11,8 @@ const {
 } = require('./services/system-actions');
 const Store = ElectronStore.default ?? ElectronStore;
 
+app.commandLine.appendSwitch('disable-renderer-backgrounding');
+
 if (process.env.ELECTRON_RENDERER_URL) {
   app.commandLine.appendSwitch('disable-http-cache');
 }
@@ -96,6 +98,7 @@ const createWindow = () => {
       contextIsolation: true,
       nodeIntegration: false,
       sandbox: true,
+      backgroundThrottling: false,
     },
   });
 
