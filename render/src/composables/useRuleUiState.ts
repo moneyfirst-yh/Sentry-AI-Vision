@@ -83,6 +83,7 @@ export function useRuleUiState() {
   const masterEnabled = ref(true);
   const sensitivity = ref(75);
   const proximity = ref(45);
+  const notificationText = ref('警告：检测到未授权人员靠近！');
   const processOptions = shallowRef<ProcessOption[]>([...mockProcessOptions]);
   const selectedProcessId = ref<string | null>(
     processOptions.value[0]?.id ?? null,
@@ -100,6 +101,7 @@ export function useRuleUiState() {
     sensitivity: sensitivity.value,
     proximity: proximity.value,
     selectedProcessId: selectedProcessId.value,
+    notificationText: notificationText.value,
     actionStates: actionItems.value.map((item) => ({
       id: item.id,
       enabled: item.enabled,
@@ -116,6 +118,10 @@ export function useRuleUiState() {
 
   const setProximity = (nextValue: number) => {
     proximity.value = clampRange(nextValue);
+  };
+
+  const setNotificationText = (text: string) => {
+    notificationText.value = text;
   };
 
   const setActionEnabled = (id: string, enabled: boolean) => {
@@ -144,6 +150,9 @@ export function useRuleUiState() {
     sensitivity.value = clampRange(state.sensitivity);
     proximity.value = clampRange(state.proximity);
     selectedProcessId.value = state.selectedProcessId;
+    if (state.notificationText !== undefined) {
+      notificationText.value = state.notificationText;
+    }
 
     const stateMap = new Map(state.actionStates.map((item) => [item.id, item.enabled]));
     actionItems.value = actionItems.value.map((item) => ({
@@ -156,6 +165,7 @@ export function useRuleUiState() {
     actionItems,
     hydrate,
     masterEnabled,
+    notificationText,
     processOptions,
     proximity,
     selectedProcess,
@@ -164,6 +174,7 @@ export function useRuleUiState() {
     snapshot,
     setActionEnabled,
     setMasterEnabled,
+    setNotificationText,
     setProcessOptions,
     setProximity,
     setSelectedProcessId,

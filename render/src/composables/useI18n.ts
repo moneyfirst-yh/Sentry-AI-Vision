@@ -18,9 +18,9 @@ const formatMessage = (template: string, params?: TranslateParams) =>
     return value === undefined ? '' : String(value);
   });
 
-export function useI18n(language: Ref<Language>) {
+export function useI18n() {
   const t: Translator = (key, fallback, params) => {
-    const localeMessages = messages[language.value] ?? {};
+    const localeMessages = messages['zh'] ?? {};
     const template = localeMessages[key] ?? fallback ?? key;
     return formatMessage(template, params);
   };

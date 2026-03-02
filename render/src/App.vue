@@ -14,9 +14,8 @@ import type { AppTab, Language, SettingsSnapshot } from './types/ui';
 
 const showSettings = ref(false);
 const activeTab = ref<AppTab>('dash');
-const language = ref<Language>('zh');
 
-const { t } = useI18n(language);
+const { t } = useI18n();
 
 const { cpuUsage, gpuUsage, fps } = useTelemetry();
 const {
@@ -35,6 +34,8 @@ const {
   setProximity,
   setSelectedProcessId,
   setSensitivity,
+  setNotificationText,
+  notificationText,
 } = useRuleUiState();
 
 const {
@@ -43,7 +44,7 @@ const {
   eventIcons,
   pushMotionScore,
   timelineBars,
-} = useActivityLog(language);
+} = useActivityLog();
 
 const camera = useCameraStream();
 const detector = usePersonDetection(camera.videoElement, sensitivity);
@@ -56,6 +57,7 @@ useRuleEngine(
     proximityScore: detector.proximityScore,
     movementScore: detector.movementScore,
     selectedProcess,
+    notificationText,
     actionItems,
   },
   {
@@ -121,12 +123,12 @@ useRuleEngine(
         detail:
           results.length > 0
             ? t('event.action.actions', 'Actions: {actions}', {
-                actions: formatted.join(', '),
-              })
+              actions: formatted.join(', '),
+            })
             : t(
-                'event.action.none',
-                'Rules reached threshold but no action was enabled.',
-              ),
+              'event.action.none',
+              'Rules reached threshold but no action was enabled.',
+            ),
         level: 'alert',
         iconName: eventIcons.triggered,
       });
@@ -213,9 +215,9 @@ const loadPersistedSettings = async () => {
         err instanceof Error
           ? err.message
           : t(
-              'event.settingsLoad.detailFallback',
-              'Unable to load persisted settings.',
-            ),
+            'event.settingsLoad.detailFallback',
+            'Unable to load persisted settings.',
+          ),
       level: 'alert',
     });
   }
@@ -244,13 +246,13 @@ const startRuntime = async () => {
         detail:
           camera.sourceMode.value === 'sample'
             ? t(
-                'event.monitoringOnline.sample',
-                'Camera unavailable, sample video fallback is active.',
-              )
+              'event.monitoringOnline.sample',
+              'Camera unavailable, sample video fallback is active.',
+            )
             : t(
-                'event.monitoringOnline.camera',
-                'Camera stream and detector are active.',
-              ),
+              'event.monitoringOnline.camera',
+              'Camera stream and detector are active.',
+            ),
       });
     } else {
       appendEvent({
@@ -291,11 +293,6 @@ const closeSettings = () => {
   settingsSnapshot.value = null;
   showSettings.value = false;
 };
-
-const setLanguage = (nextLanguage: Language) => {
-  language.value = nextLanguage;
-};
-
 const setActiveTab = (nextTab: AppTab) => {
   activeTab.value = nextTab;
 };
@@ -321,9 +318,9 @@ const applySettings = async () => {
         err instanceof Error
           ? err.message
           : t(
-              'event.settingsSaveFailed.detailFallback',
-              'Unable to persist settings.',
-            ),
+            'event.settingsSaveFailed.detailFallback',
+            'Unable to persist settings.',
+          ),
       level: 'alert',
     });
   }
@@ -368,10 +365,10 @@ watch(masterEnabled, async (enabled) => {
       detail: started
         ? t('event.detectionResumed.detail', 'Monitoring detection loop resumed.')
         : detector.error.value ??
-          t(
-            'event.detectorOffline.detailFallback',
-            'Detector initialization failed.',
-          ),
+        t(
+          'event.detectorOffline.detailFallback',
+          'Detector initialization failed.',
+        ),
       level: started ? 'default' : 'alert',
     });
   } else {
@@ -391,50 +388,19 @@ onBeforeUnmount(() => {
 
 <template>
   <div class="bg-background-dark text-slate-100 min-h-screen flex flex-col overflow-hidden selection:bg-primary/30">
-    <DashboardPage
-      v-if="!showSettings"
-      key="dashboard"
-      :language="language"
-      :t="t"
-      :fps="dashboardFps"
-      :cpu-usage="cpuUsage"
-      :gpu-usage="gpuUsage"
-      :active-tab="activeTab"
-      :alarm-logs="alarmLogs"
-      :timeline-bars="timelineBars"
-      :person-boxes="detector.boxes.value"
-      :target-count="detector.targetCount.value"
-      :distance-text="distanceText"
-      :movement-text="movementText"
-      :source-mode="camera.sourceMode.value"
-      :camera-status="cameraStatus"
-      :detector-status="detector.status.value"
-      :camera-error="cameraError"
-      :detector-error="detectorError"
-      :bind-video-element="camera.bindVideoElement"
-      @open-settings="openSettings"
-      @change-language="setLanguage"
-      @change-tab="setActiveTab"
-    />
+    <DashboardPage v-if="!showSettings" key="dashboard" :t="t" :fps="dashboardFps" :cpu-usage="cpuUsage"
+      :gpu-usage="gpuUsage" :active-tab="activeTab" :alarm-logs="alarmLogs" :timeline-bars="timelineBars"
+      :person-boxes="detector.boxes.value" :target-count="detector.targetCount.value" :distance-text="distanceText"
+      :movement-text="movementText" :source-mode="camera.sourceMode.value" :camera-status="cameraStatus"
+      :detector-status="detector.status.value" :camera-error="cameraError" :detector-error="detectorError"
+      :bind-video-element="camera.bindVideoElement" @open-settings="openSettings" @change-tab="setActiveTab" />
 
-    <SettingsPage
-      v-else
-      key="settings"
-      :t="t"
-      :master-enabled="masterEnabled"
-      :sensitivity="sensitivity"
-      :proximity="proximity"
-      :action-items="actionItems"
-      :process-options="processOptions"
-      :selected-process-id="selectedProcessId"
-      @update:master-enabled="setMasterEnabled"
-      @update:sensitivity="setSensitivity"
-      @update:proximity="setProximity"
-      @update-action="setActionEnabled($event.id, $event.enabled)"
-      @update:selected-process-id="setSelectedProcessId"
-      @refresh-processes="refreshProcessList"
-      @apply="applySettings"
-      @close="closeSettings"
-    />
+    <SettingsPage v-else key="settings" :t="t" :master-enabled="masterEnabled" :sensitivity="sensitivity"
+      :proximity="proximity" :notification-text="notificationText" :action-items="actionItems"
+      :process-options="processOptions" :selected-process-id="selectedProcessId"
+      @update:master-enabled="setMasterEnabled" @update:sensitivity="setSensitivity" @update:proximity="setProximity"
+      @update:notification-text="setNotificationText" @update-action="setActionEnabled($event.id, $event.enabled)"
+      @update:selected-process-id="setSelectedProcessId" @refresh-processes="refreshProcessList" @apply="applySettings"
+      @close="closeSettings" />
   </div>
 </template>

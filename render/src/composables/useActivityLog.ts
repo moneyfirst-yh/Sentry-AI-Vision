@@ -10,10 +10,7 @@ interface EventPayload {
   iconName?: IconName;
 }
 
-const resolveLocale = (language?: Language) => {
-  if (language === 'en') {
-    return 'en-US';
-  }
+const resolveLocale = () => {
   return 'zh-CN';
 };
 
@@ -33,7 +30,7 @@ const mapScoreToBar = (id: number, score: number): TimelineBar => {
   return { id, heightClass: 'h-4', colorClass: 'bg-slate-700' };
 };
 
-export function useActivityLog(language?: Ref<Language>) {
+export function useActivityLog() {
   const logs = shallowRef<AlarmLogItem[]>([]);
   const barSeed = shallowRef(
     Array.from({ length: 16 }, (_, index) =>
@@ -44,7 +41,7 @@ export function useActivityLog(language?: Ref<Language>) {
   let logCursor = 1;
 
   const appendEvent = (payload: EventPayload) => {
-    const locale = resolveLocale(language?.value);
+    const locale = resolveLocale();
     const item: AlarmLogItem = {
       id: logCursor++,
       title: payload.title,

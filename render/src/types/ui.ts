@@ -1,4 +1,4 @@
-export type Language = 'zh' | 'en';
+export type Language = 'zh';
 export type AppTab = 'dash' | 'events' | 'cameras' | 'logs';
 export type AlarmLevel = 'default' | 'alert' | 'muted';
 export type IconName =
@@ -69,6 +69,7 @@ export interface SettingsSnapshot {
   sensitivity: number;
   proximity: number;
   selectedProcessId: string | null;
+  notificationText: string;
   actionStates: Array<{
     id: string;
     enabled: boolean;

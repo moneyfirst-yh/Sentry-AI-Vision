@@ -10,6 +10,7 @@ interface RuleInputRefs {
   proximityScore: Ref<number>;
   movementScore: Ref<number>;
   selectedProcess: Ref<ProcessOption | null>;
+  notificationText: Ref<string>;
   actionItems: Ref<ActionSetting[]>;
 }
 
@@ -50,13 +51,8 @@ export function useRuleEngine(
 
     if (actionMap.get('desktop-notification')) {
       const result = await nativeApi.notify.send({
-        title: t?.('notify.title', 'Sentinel Alert') ?? 'Sentinel Alert',
-        body:
-          t?.(
-            'notify.body',
-            'Person approaching detected, response strategy triggered.',
-          ) ??
-          'Person approaching detected, response strategy triggered.',
+        title: t?.('notify.title', '哨兵告警') ?? '哨兵告警',
+        body: input.notificationText.value,
       });
       if (result.ok) {
         results.push('desktop-notification');

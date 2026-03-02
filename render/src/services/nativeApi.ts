@@ -27,6 +27,7 @@ let cachedSettings: SettingsSnapshot = {
   sensitivity: 75,
   proximity: 45,
   selectedProcessId: null,
+  notificationText: '警告：检测到未授权人员靠近！',
   actionStates: [
     { id: 'desktop-notification', enabled: true },
     { id: 'auto-kill', enabled: false },
@@ -46,7 +47,7 @@ const fallbackApi: SentinelNativeApi = {
   system: {
     listProcesses: async () => [],
     killProcess: async () => ({ ok: false }),
-    minimizeProcess: async () => ({ ok: false }),
+    minimizeProcess: async (pid: number) => ({ ok: false }),
     showDesktop: async () => ({ ok: false }),
     telemetry: async () => ({ cpuUsage: 0, gpuUsage: null, fps: null }),
   },

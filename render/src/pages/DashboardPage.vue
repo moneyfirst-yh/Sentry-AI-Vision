@@ -14,13 +14,11 @@ import type { Translator } from '../composables/useI18n';
 import type {
   AlarmLogItem,
   AppTab,
-  Language,
   PersonBox,
   TimelineBar,
 } from '../types/ui';
 
 const props = defineProps<{
-  language: Language;
   t: Translator;
   fps: number;
   cpuUsage: number;
@@ -42,7 +40,6 @@ const props = defineProps<{
 
 const emit = defineEmits<{
   (e: 'open-settings'): void;
-  (e: 'change-language', value: Language): void;
   (e: 'change-tab', value: AppTab): void;
 }>();
 
@@ -66,40 +63,20 @@ const statCards = computed(() => [
 
 <template>
   <div class="flex-1 flex flex-col overflow-hidden">
-    <TopHeader
-      :language="props.language"
-      :t="props.t"
-      :fps="props.fps"
-      @change-language="emit('change-language', $event)"
-      @open-settings="emit('open-settings')"
-    />
+    <TopHeader :t="props.t" :fps="props.fps" @open-settings="emit('open-settings')" />
 
     <main class="flex-1 overflow-y-auto no-scrollbar pb-24">
       <div v-show="props.activeTab === 'dash'">
         <section class="ui-section grid grid-cols-2 gap-3 py-4">
-          <StatCard
-            v-for="card in statCards"
-            :key="card.id"
-            :icon-name="card.iconName"
-            :title="card.title"
-            :subtitle="card.subtitle"
-            :value="card.value"
-          />
+          <StatCard v-for="card in statCards" :key="card.id" :icon-name="card.iconName" :title="card.title"
+            :subtitle="card.subtitle" :value="card.value" />
         </section>
 
         <section class="ui-section pb-4">
-          <CameraFeedPanel
-            :bind-video-element="props.bindVideoElement"
-            :boxes="props.personBoxes"
-            :target-count="props.targetCount"
-            :distance-text="props.distanceText"
-            :movement-text="props.movementText"
-            :t="props.t"
-            :camera-status="props.cameraStatus"
-            :detector-status="props.detectorStatus"
-            :camera-error="props.cameraError"
-            :detector-error="props.detectorError"
-          />
+          <CameraFeedPanel :bind-video-element="props.bindVideoElement" :boxes="props.personBoxes"
+            :target-count="props.targetCount" :distance-text="props.distanceText" :movement-text="props.movementText"
+            :t="props.t" :camera-status="props.cameraStatus" :detector-status="props.detectorStatus"
+            :camera-error="props.cameraError" :detector-error="props.detectorError" />
         </section>
 
         <TimelinePanel :bars="props.timelineBars" :t="props.t" />
@@ -111,20 +88,11 @@ const statCards = computed(() => [
       </div>
 
       <div v-show="props.activeTab === 'cameras'">
-        <CamerasPanel
-          :t="props.t"
-          :source-mode="props.sourceMode"
-          :camera-status="props.cameraStatus"
-          :detector-status="props.detectorStatus"
-          :camera-error="props.cameraError"
-          :detector-error="props.detectorError"
-          :target-count="props.targetCount"
-          :movement-text="props.movementText"
-          :distance-text="props.distanceText"
-          :fps="props.fps"
-          :cpu-usage="props.cpuUsage"
-          :gpu-usage="props.gpuUsage"
-        />
+        <CamerasPanel :t="props.t" :source-mode="props.sourceMode" :camera-status="props.cameraStatus"
+          :detector-status="props.detectorStatus" :camera-error="props.cameraError"
+          :detector-error="props.detectorError" :target-count="props.targetCount" :movement-text="props.movementText"
+          :distance-text="props.distanceText" :fps="props.fps" :cpu-usage="props.cpuUsage"
+          :gpu-usage="props.gpuUsage" />
       </div>
 
       <div v-show="props.activeTab === 'logs'">
@@ -132,11 +100,6 @@ const statCards = computed(() => [
       </div>
     </main>
 
-    <BottomNav
-      :active-tab="props.activeTab"
-      :items="navItems"
-      :t="props.t"
-      @change-tab="emit('change-tab', $event)"
-    />
+    <BottomNav :active-tab="props.activeTab" :items="navItems" :t="props.t" @change-tab="emit('change-tab', $event)" />
   </div>
 </template>

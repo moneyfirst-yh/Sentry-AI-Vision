@@ -12,6 +12,7 @@ const props = defineProps<{
   masterEnabled: boolean;
   sensitivity: number;
   proximity: number;
+  notificationText: string;
   actionItems: ActionSetting[];
   processOptions: ProcessOption[];
   selectedProcessId: string | null;
@@ -24,6 +25,7 @@ const emit = defineEmits<{
   (e: 'update:master-enabled', value: boolean): void;
   (e: 'update:sensitivity', value: number): void;
   (e: 'update:proximity', value: number): void;
+  (e: 'update:notification-text', value: string): void;
   (e: 'update-action', payload: { id: string; enabled: boolean }): void;
   (e: 'update:selected-process-id', id: string): void;
   (e: 'refresh-processes'): void;
@@ -44,7 +46,8 @@ const applySettings = () => emit('apply');
 
 <template>
   <div class="flex-1 flex flex-col bg-background-dark overflow-y-auto no-scrollbar">
-    <div class="flex items-center p-4 pb-2 justify-between sticky top-0 z-20 bg-background-dark border-b border-primary/10">
+    <div
+      class="flex items-center p-4 pb-2 justify-between sticky top-0 z-20 bg-background-dark border-b border-primary/10">
       <button @click="closeSettings" class="text-slate-100 p-2 hover:bg-white/5 rounded-full transition-all">
         <X class="w-6 h-6" />
       </button>
@@ -56,38 +59,22 @@ const applySettings = () => emit('apply');
           {{ props.t('settings.subtitle', 'Settings Panel') }}
         </p>
       </div>
-      <button
-        class="p-2 text-slate-100 hover:bg-white/5 rounded-full transition-all"
-        @click="showHelp = true"
-      >
+      <button class="p-2 text-slate-100 hover:bg-white/5 rounded-full transition-all" @click="showHelp = true">
         <HelpCircle class="w-6 h-6" />
       </button>
     </div>
 
     <div class="flex flex-col gap-6 p-4 pb-12">
-      <GlobalSettingsSection
-        :master-enabled="props.masterEnabled"
-        :sensitivity="props.sensitivity"
-        :proximity="props.proximity"
-        :t="props.t"
-        @update:master-enabled="emit('update:master-enabled', $event)"
-        @update:sensitivity="emit('update:sensitivity', $event)"
-        @update:proximity="emit('update:proximity', $event)"
-      />
+      <GlobalSettingsSection :master-enabled="props.masterEnabled" :sensitivity="props.sensitivity"
+        :proximity="props.proximity" :t="props.t" @update:master-enabled="emit('update:master-enabled', $event)"
+        @update:sensitivity="emit('update:sensitivity', $event)" @update:proximity="emit('update:proximity', $event)" />
 
-      <ActionStrategySection
-        :items="props.actionItems"
-        :t="props.t"
+      <ActionStrategySection :items="props.actionItems" :notification-text="props.notificationText" :t="props.t"
         @update-action="emit('update-action', $event)"
-      />
+        @update:notification-text="emit('update:notification-text', $event)" />
 
-      <WatchTargetSection
-        :selected="selectedProcess"
-        :options="props.processOptions"
-        :t="props.t"
-        @select-process="emit('update:selected-process-id', $event)"
-        @refresh="emit('refresh-processes')"
-      />
+      <WatchTargetSection :selected="selectedProcess" :options="props.processOptions" :t="props.t"
+        @select-process="emit('update:selected-process-id', $event)" @refresh="emit('refresh-processes')" />
 
       <SettingsActionPanel :t="props.t" @apply="applySettings" @cancel="closeSettings" />
     </div>
@@ -98,11 +85,8 @@ const applySettings = () => emit('apply');
       </p>
     </div>
 
-    <div
-      v-if="showHelp"
-      class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-6"
-      @click.self="showHelp = false"
-    >
+    <div v-if="showHelp" class="fixed inset-0 z-50 bg-black/70 backdrop-blur-sm flex items-center justify-center p-6"
+      @click.self="showHelp = false">
       <div class="ui-card-soft p-5 max-w-md w-full border border-primary/20">
         <div class="flex items-start justify-between gap-3">
           <div>
@@ -113,22 +97,16 @@ const applySettings = () => emit('apply');
               {{ props.t('settings.help.subtitle', 'Meaning and operating notes') }}
             </p>
           </div>
-          <button
-            type="button"
-            class="text-slate-400 hover:text-primary"
-            @click="showHelp = false"
-          >
+          <button type="button" class="text-slate-400 hover:text-primary" @click="showHelp = false">
             <X class="w-5 h-5" />
           </button>
         </div>
         <p class="text-sm text-slate-200 mt-4">
-          {{ props.t('settings.help.body', 'When master detection is enabled, events are triggered based on sensitivity and proximity threshold. Action strategy decides the response behavior after a trigger. Validate outcomes in a safe environment first.') }}
+          {{ props.t('settings.help.body', `When master detection is enabled, events are triggered based on sensitivity
+          and proximity threshold.Action strategy decides the response behavior after a trigger.Validate outcomes in a
+          safe environment first.`) }}
         </p>
-        <button
-          type="button"
-          class="mt-5 ui-button-primary w-full h-11"
-          @click="showHelp = false"
-        >
+        <button type="button" class="mt-5 ui-button-primary w-full h-11" @click="showHelp = false">
           {{ props.t('settings.help.close', 'Close') }}
         </button>
       </div>

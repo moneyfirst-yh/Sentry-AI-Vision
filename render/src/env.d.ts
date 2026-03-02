@@ -17,6 +17,7 @@ interface Window {
     system: {
       listProcesses: () => Promise<import('./types/ui').NativeProcessInfo[]>;
       killProcess: (pid: number) => Promise<{ ok: boolean }>;
+      minimizeProcess: (pid: number) => Promise<{ ok: boolean }>;
       showDesktop: () => Promise<{ ok: boolean }>;
       telemetry: () => Promise<import('./types/ui').TelemetrySample>;
     };

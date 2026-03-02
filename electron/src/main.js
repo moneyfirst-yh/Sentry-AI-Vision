@@ -20,6 +20,7 @@ const settingsSchema = z.object({
   sensitivity: z.number().min(0).max(100),
   proximity: z.number().min(0).max(100),
   selectedProcessId: z.string().nullable(),
+  notificationText: z.string().max(100),
   actionStates: z.array(
     z.object({
       id: z.string(),
@@ -65,6 +66,7 @@ const defaultSettings = {
   sensitivity: 75,
   proximity: 45,
   selectedProcessId: null,
+  notificationText: '警告：检测到未授权人员靠近！',
   actionStates: [
     { id: 'desktop-notification', enabled: true },
     { id: 'auto-kill', enabled: false },
